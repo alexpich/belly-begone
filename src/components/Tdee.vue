@@ -9,15 +9,15 @@
 
             <h3>Gender</h3>
             <div class="gender">
-              <input type="radio" id="male" name="gender" value="male" />
+              <input v-model="picked" type="radio" id="male" name="gender" value="male" />
               <label for="male">Male</label>
-              <input type="radio" id="female" name="gender" value="female" />
+              <input v-model="picked" type="radio" id="female" name="gender" value="female" />
               <label for="female">Female</label>
             </div>
 
             <h3>Age</h3>
             <div>
-              <input type="number" />
+              <input v-model="age" type="number" />
             </div>
 
             <h3>Weight</h3>
@@ -27,8 +27,8 @@
 
             <h3>Height</h3>
             <div>
-              <!-- TODO: Split feet and inches into two different inputs -->
-              <select name="height" id="height">
+              <!-- TODO: Split feet and inches into two different inputs? -->
+              <select v-model="height" name="height" id="height">
                 <option value="48">4ft 0in</option>
                 <option value="49">4ft 1in</option>
                 <option value="50">4ft 2in</option>
@@ -71,7 +71,7 @@
 
             <h3>Activity Level</h3>
             <div>
-              <select name="activity" id="activity">
+              <select v-model="activity" name="activity" id="activity">
                 <option value="sedentary">Sedentary</option>
                 <option value="light">Light Activity</option>
                 <option value="active">Active</option>
@@ -79,9 +79,12 @@
               </select>
             </div>
 
-            <button @click="calcBmrMale">Calculate</button>
-            <p>{{ weight }}</p>
-            <p>{{ bmrMale }}</p>
+            <!-- <button v-on="picked == 'male' ? {click: calcBmrMale} : {click:calcBmrFemale}">Calculate</button> -->
+            <button @click="calcTdee">Calculate</button>
+            <p>Your TDEE is: {{ tdee }}</p>
+            <!-- TODO: Hide this and only show when Calcualte button is clicked -->
+            <p>We recommend consuming {{ tdee - 500 }} calories per day to lose weight.</p>
+            <p>We recommend consuming {{ tdee + 500 }} calories per day to gain weight.</p>
           </div>
         </div>
       </div>
@@ -93,15 +96,73 @@
 export default {
   data() {
     return {
+      picked: null,
+      age: 0,
       weight: 0,
       height: 0,
-      bmrMale: ""
+      bmrMale: "",
+      bmrFemale: "",
+      tdee: "",
+      activity: ""
     };
   },
   methods: {
     calcBmrMale: function() {
-      this.bmrMale =
-        66 + 6.2 * parseInt(this.weight) + 12.7 * parseInt(this.height);
+      // BMR = 66 + ( 6.2 × weight in pounds ) + ( 12.7 × height in inches ) – ( 6.76 × age in years )
+      this.bmrMale = Math.round(
+        66 +
+          6.2 * parseInt(this.weight) +
+          12.7 * parseInt(this.height) -
+          6.76 * parseInt(this.age)
+      );
+    },
+    calcBmrFemale: function() {
+      // BMR = 655.1 + ( 4.35 × weight in pounds ) + ( 4.7 × height in inches ) - ( 4.7 × age in years )
+      this.bmrFemale = Math.round(
+        655.1 +
+          4.35 * parseInt(this.weight) +
+          4.7 * parseInt(this.height) -
+          4.7 * parseInt(this.age)
+      );
+    },
+    // BMR x 1.53
+    calcSedAndLightTdee: function() {
+      if (this.picked == "male") {
+        this.calcBmrMale();
+        this.tdee = parseInt(this.bmrMale * 1.53);
+      } else {
+        this.calcBmrFemale();
+        this.tdee = parseInt(this.bmrFemale * 1.53);
+      }
+    },
+    // BMR x 1.76
+    calcActiveTdee: function() {
+      if (this.picked == "male") {
+        this.calcBmrMale();
+        this.tdee = parseInt(this.bmrMale * 1.76);
+      } else {
+        this.calcBmrFemale();
+        this.tdee = parseInt(this.bmrFemale * 1.76);
+      }
+    },
+    // BMR x 2.25
+    calcAthleteTdee: function() {
+      if (this.picked == "male") {
+        this.calcBmrMale();
+        this.tdee = parseInt(this.bmrMale * 2.25);
+      } else {
+        this.calcBmrFemale();
+        this.tdee = parseInt(this.bmrFemale * 2.25);
+      }
+    },
+    calcTdee: function() {
+      if (this.activity == "sedentary" || this.activity == "light") {
+        this.calcSedAndLightTdee();
+      } else if (this.activity == "active") {
+        this.calcActiveTdee();
+      } else if (this.activity == "athlete") {
+        this.calcAthleteTdee();
+      }
     }
   }
 };
