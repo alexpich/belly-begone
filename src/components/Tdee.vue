@@ -95,7 +95,7 @@ export default {
     return {
       weight: 0,
       height: 0,
-      bmrMale: 0
+      bmrMale: ""
     };
   },
   methods: {
