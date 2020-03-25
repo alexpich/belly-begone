@@ -1,10 +1,9 @@
 <template>
   <div class="tdee">
-    <h2>Tdee component</h2>
     <div class="container">
       <div class="row">
-        <div class="col-xs-12 col-sm-6">
-          <div class="tdee-container">
+        <div class="col-xs-12 col-md-6">
+          <div class="container tdee-container">
             <h2>Track How Many Calories Your Body Burns</h2>
 
             <h3>Gender</h3>
