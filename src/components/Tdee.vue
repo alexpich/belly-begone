@@ -81,13 +81,10 @@
 
             <!-- <button v-on="picked == 'male' ? {click: calcBmrMale} : {click:calcBmrFemale}">Calculate</button> -->
             <button @click="calcTdee">Calculate</button>
-            <p>picked: {{ picked }}</p>
-            <p>age: {{ age }}</p>
-            <p>weight: {{ weight }}</p>
-            <p>height: {{ height }}</p>
-            <p>bmrMale: {{ bmrMale }}</p>
-            <p>bmrFemale: {{ bmrFemale }}</p>
-            <p>tdee: {{ tdee }}</p>
+            <p>Your TDEE is: {{ tdee }}</p>
+            <!-- TODO: Hide this and only show when Calcualte button is clicked -->
+            <p>We recommend consuming {{ tdee - 500 }} calories per day to lose weight.</p>
+            <p>We recommend consuming {{ tdee + 500 }} calories per day to gain weight.</p>
           </div>
         </div>
       </div>
